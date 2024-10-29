@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Students - Isabela State University</title>
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                font-family: "Roboto", sans-serif;
+                background-color: #f8f9fa;
+                color: #333;
+            }
+            .container {
+                margin-top: 30px;
+                margin-bottom: 30px;
+                border-radius: 10px;
+                background-color: #ffffff;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+            h1,
+            h2,
+            h3 {
+                color: #003300; /* Set heading colors to dark green */
+                font-weight: 700;
+            }
+            .logo {
+                height: 50px;
+                vertical-align: middle;
+                margin-right: 10px;
+            }
+            .btn {
+                border-radius: 5px;
+            }
+            .table th,
+            .table td {
+                vertical-align: middle;
+            }
+            .table-hover tbody tr:hover {
+                background-color: #dcedc8; /* Lighter green hover color */
+            }
+            .pagination {
+                justify-content: center;
+            }
+            footer {
+                margin-top: 30px;
+                padding: 20px 0;
+                background-color: #81c784; /* Light green footer color */
+                color: white;
+                text-align: center;
+            }
+            .alert {
+                margin-top: 20px;
+            }
+            .card {
+                margin-top: 20px;
+            }
+            .navbar {
+                background-color: #81c784; /* Light green navbar color */
+            }
+            .navbar-brand {
+                font-size: 1.5rem; /* Make university name larger */
+            }
+            /* New style for student names */
+            .student-name {
+                color: #388e3c; /* Dark green color for student names */
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <img
+                        src="{{ url_for('static', filename='images/isu.png') }}"
+                        alt="Logo"
+                        class="logo"
+                    />
+                    Isabela State University
+                </a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"></li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('upload_grades') }}"
+                                >Upload Grades</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <h1 class="text-center">Student Management System</h1>
+
+            <h2 class="mt-4">Students List</h2>
+            <div class="mb-3 text-end">
+                <a href="{{ url_for('add_student') }}" class="btn btn-primary"
+                    >Add Students</a
+                >
+                <a
+                    href="{{ url_for('upload_grades') }}"
+                    class="btn btn-secondary"
+                    >Upload Grades</a
+                >
+            </div>
+
+            <form
+                class="d-flex mb-4"
+                method="get"
+                action="{{ url_for('students') }}"
+            >
+                <input
+                    class="form-control me-2"
+                    type="search"
+                    name="search"
+                    placeholder="Search Students"
+                    aria-label="Search"
+                    value="{{ search_query }}"
+                />
+                <button class="btn btn-outline-success" type="submit">
+                    Search
+                </button>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Date of Birth</th>
+                            <th>Phone</th>
+                            <th>Guardian</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td class="student-name">{{ student.name }}</td>
+                            <td>{{ student.dob }}</td>
+                            <td>{{ student.phone }}</td>
+                            <td>{{ student.guardian }}</td>
+                            <td>
+                                <a
+                                    href="{{ url_for('enter_grades', id=student.id) }}"
+                                    class="btn btn-primary btn-sm"
+                                    >Enter Grades</a
+                                >
+                                <a
+                                    href="{{ url_for('update_student', id=student.id) }}"
+                                    class="btn btn-warning btn-sm"
+                                    >Edit</a
+                                >
+                                <form
+                                    action="{{ url_for('delete_student', id=student.id) }}"
+                                    method="POST"
+                                    style="display: inline"
+                                    onsubmit="return confirm('Are you sure you want to delete this student?');"
+                                >
+                                    <button
+                                        type="submit"
+                                        class="btn btn-danger btn-sm"
+                                    >
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="mt-4">Grading System (GWA)</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Quiz Grade</th>
+                            <th>Project Grade</th>
+                            <th>Recitation Grade</th>
+                            <th>Prelim Grade</th>
+                            <th>Midterm Grade</th>
+                            <th>Final Exam Grade</th>
+                            <th>Final Numeric Grade (GWA)</th>
+                            <th>Grade Scale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td class="student-name">{{ student.name }}</td>
+                            <td>{{ student.quiz_grade }}</td>
+                            <td>{{ student.project_grade }}</td>
+                            <td>{{ student.recitation_grade }}</td>
+                            <td>{{ student.prelim_grade }}</td>
+                            <td>{{ student.midterm_grade }}</td>
+                            <td>{{ student.final_exam_grade }}</td>
+                            <td>{{ student.final_grade_numeric }}</td>
+                            <td>
+                                {% if student.final_grade_scale %} {{
+                                student.final_grade_scale }} {% else %} Not
+                                Available {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a
+                            class="page-link"
+                            href="{{ url_for('students', page=pagination.prev_num, search=search_query) }}"
+                            >Previous</a
+                        >
+                    </li>
+                    {% endif %} {% for page in range(1, pagination.pages + 1) %}
+                    <li
+                        class="page-item {% if page == pagination.page %}active{% endif %}"
+                    >
+                        <a
+                            class="page-link"
+                            href="{{ url_for('students', page=page, search=search_query) }}"
+                            >{{ page }}</a
+                        >
+                    </li>
+                    {% endfor %} {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a
+                            class="page-link"
+                            href="{{ url_for('students', page=pagination.next_num, search=search_query) }}"
+                            >Next</a
+                        >
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+
+            <!-- Notifications -->
+            <div class="alert alert-info" role="alert">
+                You can add, edit, or delete student records. Please ensure the
+                information is accurate.
+            </div>
+
+            <!-- About Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>About This System</h4>
+                </div>
+                <div class="card-body">
+                    <p>
+                        This Student Management System is designed to facilitate
+                        the management of student records, grades, and overall
+                        academic performance at Isabela State University.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Isabela State University. All rights reserved.</p>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    </body>
+</html>

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Enter Grades for {{ student.name }}</title>
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='styles.css') }}"
+        />
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="my-4">Enter Grades for {{ student.name }}</h1>
+            <form
+                action="{{ url_for('enter_grades', id=student.id) }}"
+                method="POST"
+                onsubmit="showLoading()"
+            >
+                <div class="form-group">
+                    <label for="quiz_grade">Quiz Grade:</label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        id="quiz_grade"
+                        name="quiz_grade"
+                        value="{{ student.quiz_grade }}"
+                        required
+                        aria-label="Quiz Grade"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="project_grade">Project Grade:</label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        id="project_grade"
+                        name="project_grade"
+                        value="{{ student.project_grade }}"
+                        required
+                        aria-label="Project Grade"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="recitation_grade">Recitation Grade:</label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        id="recitation_grade"
+                        name="recitation_grade"
+                        value="{{ student.recitation_grade }}"
+                        required
+                        aria-label="Recitation Grade"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="prelim_grade">Prelim Exam Grade:</label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        id="prelim_grade"
+                        name="prelim_grade"
+                        value="{{ student.prelim_grade }}"
+                        required
+                        aria-label="Prelim Exam Grade"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="midterm_grade">Midterm Exam Grade:</label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        id="midterm_grade"
+                        name="midterm_grade"
+                        value="{{ student.midterm_grade }}"
+                        required
+                        aria-label="Midterm Exam Grade"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="final_exam_grade">Final Exam Grade:</label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        id="final_exam_grade"
+                        name="final_exam_grade"
+                        value="{{ student.final_exam_grade }}"
+                        required
+                        aria-label="Final Exam Grade"
+                    />
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Save Grades
+                </button>
+            </form>
+
+            {% if student.final_weighted_score is not none %}
+            <h2 class="mt-4">Results</h2>
+            <p>Total Weighted Score: {{ student.final_weighted_score }}</p>
+            <p>Final Grade: {{ student.final_grade }}</p>
+            {% endif %}
+
+            <a href="{{ url_for('students') }}" class="btn btn-secondary mt-2">Back to Student List</a>
+        </div>
+
+        <!-- Loading spinner -->
+        <div id="loading" class="d-none">
+            <p class="text-center">Saving grades, please wait...</p>
+        </div>
+
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            function showLoading() {
+                document.getElementById("loading").classList.remove("d-none");
+            }
+        </script>
+    </body>
+</html>
